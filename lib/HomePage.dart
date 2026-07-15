@@ -105,8 +105,21 @@ class _HomepageState extends ConsumerState<Homepage> {
 
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('\$${expense.amount}', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
+                            child: Row(
+
+                              children: [
+                                Text('\$${expense.amount}', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
+                                GestureDetector(
+                                  onTap: () {
+                                    ref.read(expenselistProvider.notifier).deleteHabit(expense.id);
+                                  },
+                                  child: Icon(Icons.close, size: 20,)
+                                )
+                              ],
+                            )
+                            
                           )
+
 
                         ],
                       ),

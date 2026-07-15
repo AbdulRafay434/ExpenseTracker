@@ -21,6 +21,10 @@ class Expenseprovider extends StateNotifier<List<Expense>>{
     state = [...state, expense];
 
   }
+  Future<void> deleteHabit(int id) async {
+    await repository.deleteHabit(id);
+    state = state.where((h) => h.id != id).toList();
+  }
 
 
 }

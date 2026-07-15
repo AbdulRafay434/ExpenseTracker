@@ -17,6 +17,12 @@ class ExpenseRepository {
     return await isar.expenses.where().findAll();
   }
 
+  Future<void> deleteHabit(int id) async {
+    await isar.writeTxn(() async {
+      await isar.expenses.delete(id);
+    });
+  
+
 
 }
-
+}
