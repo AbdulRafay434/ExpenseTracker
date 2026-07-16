@@ -18,12 +18,7 @@ class Statspage extends ConsumerWidget {
     }
     return Scaffold(
       appBar: AppBar(
-        leading: GestureDetector(
-          onTap: () {
-            context.pop();
-          },
-          child: Icon(Icons.arrow_back),
-        ),
+        
       ),
       body: Column(
         children: [

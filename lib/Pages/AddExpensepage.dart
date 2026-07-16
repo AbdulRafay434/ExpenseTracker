@@ -33,10 +33,7 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: GestureDetector(onTap: () {
-          context.pop();
-        },
-        child: Icon(Icons.arrow_back),),
+        
         title: Text('Add Expense'),
       ),
       body:
@@ -142,7 +139,7 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                 onTap: () {
                   Expense newexpense = Expense(name: _detailController.text, amount: _amountController.text, date: dateController.text.substring(0,6), categoryName: _selectedCategory.name, iconCodePoint: _selectedCategory.icon.codePoint, iconFontFamily: _selectedCategory.icon.fontFamily ?? '', colorVal: _selectedCategory.color.toARGB32());
                   ref.read(expenselistProvider.notifier).add(newexpense);
-                  context.pop();
+                  context.go('/');
                 },
                 child: Container(
                   alignment: Alignment.center,

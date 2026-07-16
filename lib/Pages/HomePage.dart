@@ -27,7 +27,7 @@ class _HomepageState extends ConsumerState<Homepage> {
               elevation: 5,
               actions: [GestureDetector(
                 onTap: () {
-                  context.pushNamed("statspage");
+                  context.go("/stats");
                 },
                 child: 
                   Padding(padding: EdgeInsetsGeometry.only(right: 10), 
@@ -128,12 +128,7 @@ class _HomepageState extends ConsumerState<Homepage> {
               )
           ],
         ),
-        floatingActionButton: FloatingActionButton(onPressed: (){
-         context.pushNamed("addexpense");
-        },
-        backgroundColor: Colors.blue,
-        shape: CircleBorder(),
-        child: Icon(Icons.add, color: Colors.white,),
-    ));
+        
+    );
   }
 }

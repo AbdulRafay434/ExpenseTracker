@@ -1,5 +1,5 @@
 import 'package:flutter_application_1/Models/Expense.dart';
-import 'package:flutter_application_1/expense_repository.dart';
+import 'package:flutter_application_1/Providers/expense_repository.dart';
 import 'package:flutter_application_1/isar_setup.dart';
 import 'package:riverpod/legacy.dart';
 

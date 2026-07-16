@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/AddExpensepage.dart';
+import 'package:flutter_application_1/Pages/AddExpensepage.dart';
 
-import 'package:flutter_application_1/HomePage.dart';
+import 'package:flutter_application_1/Pages/HomePage.dart';
+import 'package:flutter_application_1/Pages/MainShell.dart';
+import 'package:flutter_application_1/Pages/Statspage.dart';
 import 'package:flutter_application_1/isar_setup.dart';
-import 'package:flutter_application_1/statspage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -47,26 +48,44 @@ class MyApp extends StatelessWidget {
 }
 final GoRouter _router = GoRouter(
   routes: [
-    GoRoute(
-      name: "/",
-      path:"/" ,
-      builder: (context, state) {
-        return const Homepage();
-      },
-    ),
-    GoRoute(
-      name: "addexpense",
-      path: "/addexpense",
-      builder: (context, state) {
-        return const AddExpensePage();
-      },
-    ),
-    GoRoute(
-      name: "statspage",
-      path: "/statspage",
-      builder: (context, state) {
-        return const Statspage();
-      },
-    ),
+    StatefulShellRoute.indexedStack(builder: (context, state, navigationShell) {
+      return Mainshell(navshell: navigationShell);
+    },
+    branches: [
+      StatefulShellBranch(
+          routes: [
+            GoRoute(
+              name: "homepage",
+              path: "/",
+              builder: (context, state) {
+                return const Homepage();
+              },
+            ),
+          ],
+        ),
+      StatefulShellBranch(
+          routes: [
+            GoRoute(
+              name: "addexpense",
+              path: "/add",
+              builder: (context, state) {
+                return const AddExpensePage();
+              },
+            ),
+          ],
+        ),
+      StatefulShellBranch(
+          routes: [
+            GoRoute(
+              name: "statspage",
+              path: "/stats",
+              builder: (context, state) {
+                return const Statspage();
+              },
+            ),
+          ],
+        ),
+      ],
+    )
   ]
 );
