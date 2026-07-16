@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Providers/ExpenseProvider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,17 +19,30 @@ class Statspage extends ConsumerWidget {
     }
     return Scaffold(
       appBar: AppBar(
-        
+        title: Text("\$${totalamount.toString()}",style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
       ),
       body: Column(
         children: [
-          Text("Total", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
-          Text("\$${totalamount.toString()}",style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
+          
+          Expanded(
+            child: PieChart(
+              
+              PieChartData(
+                centerSpaceRadius: 0,
+                sectionsSpace: 0,
+                sections: [
+                  PieChartSectionData(value: totals["Billing"] ?? 0, color: Colors.green, title: "Billing", radius: 100),
+                  PieChartSectionData(value: totals["Transport"] ?? 0, color: Colors.purpleAccent, title: "Transport", radius: 100 ),
+                  PieChartSectionData(value: totals["Food"] ?? 0, color: Colors.orange, title: "Food", radius: 100),
+                  PieChartSectionData(value: totals["Shopping"] ?? 0, color: Color.fromARGB(255, 114, 114, 0), title: "Shopping", radius: 100 ),
+                ],
+              )),
+          ),
           
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
-              height: 100,
+              height: 80,
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey, width: 0.5),
                 borderRadius: BorderRadius.circular(10)
@@ -36,7 +50,7 @@ class Statspage extends ConsumerWidget {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(2.0),
                     child: Row(
                       
                       children: [
@@ -69,7 +83,7 @@ class Statspage extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
-              height: 100,
+              height: 80,
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey, width: 0.5),
                 borderRadius: BorderRadius.circular(10)
@@ -77,7 +91,7 @@ class Statspage extends ConsumerWidget {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(2.0),
                     child: Row(
                       
                       children: [
@@ -110,7 +124,7 @@ class Statspage extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
-              height: 100,
+              height: 80,
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey, width: 0.5),
                 borderRadius: BorderRadius.circular(10)
@@ -118,7 +132,7 @@ class Statspage extends ConsumerWidget {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(2.0),
                     child: Row(
                       
                       children: [
@@ -151,7 +165,7 @@ class Statspage extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
-              height: 100,
+              height: 80,
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey, width: 0.5),
                 borderRadius: BorderRadius.circular(10)
@@ -159,7 +173,7 @@ class Statspage extends ConsumerWidget {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(2.0),
                     child: Row(
                       
                       children: [
@@ -191,7 +205,10 @@ class Statspage extends ConsumerWidget {
           
 
         ],
+        
       ),
+
+
     );
   }
 }

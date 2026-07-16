@@ -48,6 +48,7 @@ dependencies:
   isar_community_flutter_libs:
     version: *isar_version
   path_provider: ^2.1.6
+  fl_chart: ^0.70.2
   
 
 
