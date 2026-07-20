@@ -11,10 +11,10 @@ class Statspage extends ConsumerWidget {
   @override
   Widget build(BuildContext context,WidgetRef ref) {
     final expenses = ref.watch(expenselistProvider);
-    final totalamount = expenses.fold(0,(total, expense) => total + int.parse(expense.amount));
+    final totalamount = expenses.fold(0,(total, expense) => total + expense.amount);
     final totals = <String, double>{};
     for (final e in expenses) {
-      totals[e.category.name] = (totals[e.category.name] ?? 0) + int.parse(e.amount);
+      totals[e.category.name] = (totals[e.category.name] ?? 0) + e.amount;
 
     }
     return Scaffold(
@@ -28,6 +28,7 @@ class Statspage extends ConsumerWidget {
             child: PieChart(
               
               PieChartData(
+                centerSpaceColor: Colors.grey,
                 centerSpaceRadius: 0,
                 sectionsSpace: 0,
                 sections: [

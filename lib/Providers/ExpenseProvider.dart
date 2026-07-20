@@ -1,4 +1,5 @@
 import 'package:flutter_application_1/Models/Expense.dart';
+import 'package:flutter_application_1/Providers/Filter_criteria.dart';
 import 'package:flutter_application_1/Providers/expense_repository.dart';
 import 'package:flutter_application_1/isar_setup.dart';
 import 'package:riverpod/legacy.dart';
@@ -13,6 +14,18 @@ class Expenseprovider extends StateNotifier<List<Expense>>{
 
   Future<void> loadExpense() async {
     state = await repository.getallExpenses();
+
+
+  }
+
+  Future<void> loadFilteredExpenses(ExpenseFilter filter) async {
+    state = await repository.getallExpenses();
+    state = await repository.getFilteredExpenses(filter);
+  }
+
+  Future<void> clearFilter() async {
+    state = await repository.getallExpenses();
+
   }
 
   Future<void> add(Expense expense) async{
@@ -22,7 +35,7 @@ class Expenseprovider extends StateNotifier<List<Expense>>{
 
   }
   Future<void> deleteHabit(int id) async {
-    await repository.deleteHabit(id);
+    await repository.deleteExpenses(id);
     state = state.where((h) => h.id != id).toList();
   }
 

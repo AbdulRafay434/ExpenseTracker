@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Models/Category.dart';
+import 'package:flutter_application_1/Providers/Filter_criteria.dart';
 import 'package:flutter_application_1/Providers/ExpenseProvider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -12,6 +14,7 @@ class Homepage extends ConsumerStatefulWidget {
 
 class _HomepageState extends ConsumerState<Homepage> {
   
+
   @override
   Widget build(BuildContext context) {
     
@@ -19,13 +22,18 @@ class _HomepageState extends ConsumerState<Homepage> {
     
     double totalval = 0.00;
     for (var expense in expenses) {
-      totalval += double.tryParse(expense.amount) ?? 0.00;
+      totalval += expense.amount;
     }
     return Scaffold(
       appBar: AppBar(title: Text("Expenses", style: TextStyle(fontWeight: FontWeight.bold),),
               centerTitle: false, 
               elevation: 5,
-              actions: [GestureDetector(
+              actions: [
+                IconButton(onPressed: (){
+                  context.push("/filter");
+                }
+                , icon: Icon(Icons.filter_alt_off_outlined)),
+                GestureDetector(
                 onTap: () {
                   context.go("/stats");
                 },
@@ -57,7 +65,6 @@ class _HomepageState extends ConsumerState<Homepage> {
               ),)
               ),
               ),
-
               Expanded(
                 child: ListView.builder(
                   padding: EdgeInsets.all(20),
@@ -93,7 +100,7 @@ class _HomepageState extends ConsumerState<Homepage> {
                                   children: [
                                     Text(expense.category.name, style: TextStyle(fontSize: 18),),
                                     Padding(padding: EdgeInsets.all(2), child:  Text(".", style: TextStyle(fontSize: 18),),),
-                                    Text(expense.date, style: TextStyle(fontSize: 18),)
+                                    Text(expense.date.toString().substring(0,10), style: TextStyle(fontSize: 18),)
                                   ]
                                   
                                 )

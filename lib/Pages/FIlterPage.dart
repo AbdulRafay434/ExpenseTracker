@@ -1,27 +1,24 @@
-
-import 'dart:ffi';
-
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_application_1/Models/Category.dart';
 import 'package:flutter_application_1/Models/Expense.dart';
+import 'package:flutter_application_1/Providers/Filter_criteria.dart';
 import 'package:flutter_application_1/Providers/ExpenseProvider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/material.dart';
 
-
-
-class AddExpensePage extends ConsumerStatefulWidget {
-  const AddExpensePage({super.key});
+class Filterpage extends ConsumerStatefulWidget{
+  const Filterpage({super.key});
 
   @override
-  ConsumerState<AddExpensePage> createState() => _AddExpensePageState();
+  ConsumerState<Filterpage> createState() => _FilterpageState();
 }
 
-class _AddExpensePageState extends ConsumerState<AddExpensePage> {
-  final TextEditingController _detailController = TextEditingController();
-  final TextEditingController _amountController = TextEditingController();
+class _FilterpageState extends ConsumerState<Filterpage>{
+
+  RangeValues _currentRangeValues = const RangeValues(0, 1000);
+  DateTimeRange? _selectedDateRange;
   final List<Category> categories = [
     Category(name: 'Food', icon: Icons.food_bank, color: Colors.orange),  
     Category(name: 'Transport', icon: Icons.car_rental, color: Colors.purpleAccent),
@@ -29,26 +26,35 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
     Category(name: 'Shopping', icon: Icons.shopping_bag, color: const Color.fromARGB(255, 114, 114, 0)),
   ];
   TextEditingController dateController = TextEditingController();
-  late Category _selectedCategory = categories[0];
+  Category? _selectedCategory;
   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Expense'),
+        title: Text('Filter Expenses'),
       ),
       body:
       Padding(padding: EdgeInsetsGeometry.all(10), 
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Detail', style: TextStyle(fontSize: 16),),
-          TextFormField(controller: _detailController,decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.circular(10),),)),
-          SizedBox(height: 15,),
 
           Text('Amount', style: TextStyle(fontSize: 16),),
-          TextField(controller: _amountController,decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.circular(10),), prefixText: '\$', prefixStyle:TextStyle(fontWeight: FontWeight.bold, fontSize: 18),), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              keyboardType: TextInputType.number, inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],),
+          RangeSlider(values: _currentRangeValues, 
+          max: 1000,
+          divisions: 100,
+          activeColor: Colors.blue,
+          labels: RangeLabels(
+            _currentRangeValues.start.round().toString(),
+            _currentRangeValues.end.round().toString(),
+          ),
+          onChanged: (RangeValues values) {
+            setState(() {
+              _currentRangeValues = values;
+            });
+          }),
+          
           SizedBox(height: 15,),
 
           Text('Category', style: TextStyle(fontSize: 16),),
@@ -138,16 +144,39 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
             children: [
               GestureDetector(
                 onTap: () {
-                  Expense newexpense = Expense(name: _detailController.text, amount: int.parse(_amountController.text), date: DateFormat('dd/MM/yyyy').parse(dateController.text), categoryName: _selectedCategory.name, iconCodePoint: _selectedCategory.icon.codePoint, iconFontFamily: _selectedCategory.icon.fontFamily ?? '', colorVal: _selectedCategory.color.toARGB32());
-                  ref.read(expenselistProvider.notifier).add(newexpense);
+                  ExpenseFilter filter = ExpenseFilter(
+                    category: _selectedCategory,
+                    startDate: _selectedDateRange?.start,
+                    endDate: _selectedDateRange?.end,
+                    minAmount: _currentRangeValues.start.toInt(),
+                    maxAmount: _currentRangeValues.end.toInt(),
+                  );
+                  ref.read(expenselistProvider.notifier).loadFilteredExpenses(filter);
+
                   context.go('/');
                 },
                 child: Container(
                   alignment: Alignment.center,
-                  width: 300,
+                  width: 200,
                   height: 50,
                   decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(10)),
-                  child: Text('Save Expense', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20),),
+                  child: Text('Save Filter', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20),),
+                ),
+              ),
+              SizedBox(width: 20,),
+              GestureDetector(
+                onTap: () {
+                  
+                  ref.read(expenselistProvider.notifier).clearFilter();
+
+                  context.go('/');
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  width: 200,
+                  height: 50,
+                  decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(10)),
+                  child: Text('Clear Filter', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20),),
                 ),
               )
             ],
@@ -167,18 +196,22 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
   }
 
   Future<void> _selectDate() async {
-    DateTime? picked = await showDatePicker(
-      context: context, 
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000), 
-      lastDate: DateTime(2100)
+  
+    
+    final DateTimeRange? picked = await showDateRangePicker(
+      context: context,
+      initialDateRange: _selectedDateRange,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
     );
-
-    if (picked != null) {
+    if (picked != null && picked != _selectedDateRange) {
       setState(() {
-        dateController.text = DateFormat('dd/MM/yyyy').format(picked);
+         _selectedDateRange = picked;
+    dateController.text = "${DateFormat('dd/MM/yyyy').format(picked.start)} - ${DateFormat('dd/MM/yyyy').format(picked.end)}";
       });
     }
+   
+    
 
 
   }

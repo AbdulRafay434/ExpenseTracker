@@ -9,8 +9,8 @@ part 'Expense.g.dart';
 class Expense {
   Id id = Isar.autoIncrement;
   late String name;
-  late String amount;
-  late String date;
+  late int amount;
+  late DateTime date;
   late String categoryName;
   late int iconCodePoint;   
   late String iconFontFamily;

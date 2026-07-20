@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Pages/AddExpensepage.dart';
+import 'package:flutter_application_1/Pages/FIlterPage.dart';
 
 import 'package:flutter_application_1/Pages/HomePage.dart';
 import 'package:flutter_application_1/Pages/MainShell.dart';
@@ -85,7 +86,17 @@ final GoRouter _router = GoRouter(
             ),
           ],
         ),
+        StatefulShellBranch(routes: [
+          GoRoute(
+            name: "filter",
+            path: "/filter",
+            builder: (context, state) {
+              return const Filterpage();
+            },
+          )
+        ])
       ],
+      
     )
   ]
 );

@@ -17,14 +17,14 @@ const ExpenseSchema = CollectionSchema(
   name: r'Expense',
   id: -4604318666888508206,
   properties: {
-    r'amount': PropertySchema(id: 0, name: r'amount', type: IsarType.string),
+    r'amount': PropertySchema(id: 0, name: r'amount', type: IsarType.long),
     r'categoryName': PropertySchema(
       id: 1,
       name: r'categoryName',
       type: IsarType.string,
     ),
     r'colorVal': PropertySchema(id: 2, name: r'colorVal', type: IsarType.long),
-    r'date': PropertySchema(id: 3, name: r'date', type: IsarType.string),
+    r'date': PropertySchema(id: 3, name: r'date', type: IsarType.dateTime),
     r'iconCodePoint': PropertySchema(
       id: 4,
       name: r'iconCodePoint',
@@ -59,9 +59,7 @@ int _expenseEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.amount.length * 3;
   bytesCount += 3 + object.categoryName.length * 3;
-  bytesCount += 3 + object.date.length * 3;
   bytesCount += 3 + object.iconFontFamily.length * 3;
   bytesCount += 3 + object.name.length * 3;
   return bytesCount;
@@ -73,10 +71,10 @@ void _expenseSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.amount);
+  writer.writeLong(offsets[0], object.amount);
   writer.writeString(offsets[1], object.categoryName);
   writer.writeLong(offsets[2], object.colorVal);
-  writer.writeString(offsets[3], object.date);
+  writer.writeDateTime(offsets[3], object.date);
   writer.writeLong(offsets[4], object.iconCodePoint);
   writer.writeString(offsets[5], object.iconFontFamily);
   writer.writeString(offsets[6], object.name);
@@ -89,10 +87,10 @@ Expense _expenseDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Expense(
-    amount: reader.readString(offsets[0]),
+    amount: reader.readLong(offsets[0]),
     categoryName: reader.readString(offsets[1]),
     colorVal: reader.readLong(offsets[2]),
-    date: reader.readString(offsets[3]),
+    date: reader.readDateTime(offsets[3]),
     iconCodePoint: reader.readLong(offsets[4]),
     iconFontFamily: reader.readString(offsets[5]),
     name: reader.readString(offsets[6]),
@@ -109,13 +107,13 @@ P _expenseDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readString(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 1:
       return (reader.readString(offset)) as P;
     case 2:
       return (reader.readLong(offset)) as P;
     case 3:
-      return (reader.readString(offset)) as P;
+      return (reader.readDateTime(offset)) as P;
     case 4:
       return (reader.readLong(offset)) as P;
     case 5:
@@ -220,24 +218,18 @@ extension ExpenseQueryWhere on QueryBuilder<Expense, Expense, QWhereClause> {
 extension ExpenseQueryFilter
     on QueryBuilder<Expense, Expense, QFilterCondition> {
   QueryBuilder<Expense, Expense, QAfterFilterCondition> amountEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+    int value,
+  ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.equalTo(
-          property: r'amount',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
+        FilterCondition.equalTo(property: r'amount', value: value),
       );
     });
   }
 
   QueryBuilder<Expense, Expense, QAfterFilterCondition> amountGreaterThan(
-    String value, {
+    int value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -245,16 +237,14 @@ extension ExpenseQueryFilter
           include: include,
           property: r'amount',
           value: value,
-          caseSensitive: caseSensitive,
         ),
       );
     });
   }
 
   QueryBuilder<Expense, Expense, QAfterFilterCondition> amountLessThan(
-    String value, {
+    int value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -262,18 +252,16 @@ extension ExpenseQueryFilter
           include: include,
           property: r'amount',
           value: value,
-          caseSensitive: caseSensitive,
         ),
       );
     });
   }
 
   QueryBuilder<Expense, Expense, QAfterFilterCondition> amountBetween(
-    String lower,
-    String upper, {
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -283,84 +271,7 @@ extension ExpenseQueryFilter
           includeLower: includeLower,
           upper: upper,
           includeUpper: includeUpper,
-          caseSensitive: caseSensitive,
         ),
-      );
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> amountStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.startsWith(
-          property: r'amount',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> amountEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.endsWith(
-          property: r'amount',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> amountContains(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.contains(
-          property: r'amount',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> amountMatches(
-    String pattern, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.matches(
-          property: r'amount',
-          wildcard: pattern,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> amountIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'amount', value: ''),
-      );
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> amountIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(property: r'amount', value: ''),
       );
     });
   }
@@ -572,24 +483,18 @@ extension ExpenseQueryFilter
   }
 
   QueryBuilder<Expense, Expense, QAfterFilterCondition> dateEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime value,
+  ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.equalTo(
-          property: r'date',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
+        FilterCondition.equalTo(property: r'date', value: value),
       );
     });
   }
 
   QueryBuilder<Expense, Expense, QAfterFilterCondition> dateGreaterThan(
-    String value, {
+    DateTime value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -597,16 +502,14 @@ extension ExpenseQueryFilter
           include: include,
           property: r'date',
           value: value,
-          caseSensitive: caseSensitive,
         ),
       );
     });
   }
 
   QueryBuilder<Expense, Expense, QAfterFilterCondition> dateLessThan(
-    String value, {
+    DateTime value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -614,18 +517,16 @@ extension ExpenseQueryFilter
           include: include,
           property: r'date',
           value: value,
-          caseSensitive: caseSensitive,
         ),
       );
     });
   }
 
   QueryBuilder<Expense, Expense, QAfterFilterCondition> dateBetween(
-    String lower,
-    String upper, {
+    DateTime lower,
+    DateTime upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -635,84 +536,7 @@ extension ExpenseQueryFilter
           includeLower: includeLower,
           upper: upper,
           includeUpper: includeUpper,
-          caseSensitive: caseSensitive,
         ),
-      );
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> dateStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.startsWith(
-          property: r'date',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> dateEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.endsWith(
-          property: r'date',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> dateContains(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.contains(
-          property: r'date',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> dateMatches(
-    String pattern, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.matches(
-          property: r'date',
-          wildcard: pattern,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> dateIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'date', value: ''),
-      );
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> dateIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(property: r'date', value: ''),
       );
     });
   }
@@ -1318,11 +1142,9 @@ extension ExpenseQuerySortThenBy
 
 extension ExpenseQueryWhereDistinct
     on QueryBuilder<Expense, Expense, QDistinct> {
-  QueryBuilder<Expense, Expense, QDistinct> distinctByAmount({
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<Expense, Expense, QDistinct> distinctByAmount() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'amount', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'amount');
     });
   }
 
@@ -1340,11 +1162,9 @@ extension ExpenseQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Expense, Expense, QDistinct> distinctByDate({
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<Expense, Expense, QDistinct> distinctByDate() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'date', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'date');
     });
   }
 
@@ -1382,7 +1202,7 @@ extension ExpenseQueryProperty
     });
   }
 
-  QueryBuilder<Expense, String, QQueryOperations> amountProperty() {
+  QueryBuilder<Expense, int, QQueryOperations> amountProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'amount');
     });
@@ -1400,7 +1220,7 @@ extension ExpenseQueryProperty
     });
   }
 
-  QueryBuilder<Expense, String, QQueryOperations> dateProperty() {
+  QueryBuilder<Expense, DateTime, QQueryOperations> dateProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'date');
     });
